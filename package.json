@@ -1,0 +1,42 @@
+{
+  "name": "vite-react-ts-tw",
+  "version": "0.0.1",
+  "description": "A small script to setup a react typescript prject with tailwind and shadcn.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "bin": {
+    "vite-react-tw-tw": "./dist/index.js"
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup"
+  },
+  "keywords": [
+    "tailwind",
+    "vite",
+    "shadcn",
+    "react",
+    "typescript"
+  ],
+  "author": {
+    "name": "Himanshu Kumar Dutt",
+    "email": "adasimobenio@gmail.com",
+    "url": "https://www.github.com/HimanshuKumarDutt094"
+  },
+  "repository": {
+    "url": "https://www.github.com/HimanshuKumarDutt094/vite-react-ts-tw"
+  },
+  "homepage": "https://www.github.com/HimanshuKumarDutt094/vite-react-ts-tw",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.12.12",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@types/command-exists": "^1.2.3",
+    "command-exists": "^1.2.9",
+    "inquirer": "^9.2.21"
+  }
+}
