@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 
 import { execSync, spawnSync } from 'child_process';
 import * as fs from 'fs';
@@ -13,7 +13,32 @@ function handleExit (signal: string) {
 
 process.on('SIGINT', () => handleExit('SIGINT'));
 process.on('SIGTERM', () => handleExit('SIGTERM'));
+function deleteFolderRecursive (folderPath: string) {
+  if (fs.existsSync(folderPath)) {
+    fs.readdirSync(folderPath).forEach((file) => {
+      const currentPath = path.join(folderPath, file);
+      if (fs.lstatSync(currentPath).isDirectory()) {
+        // Recursively delete subdirectory
+        deleteFolderRecursive(currentPath);
+      } else {
+        // Delete file
+        fs.unlinkSync(currentPath);
+      }
+    });
+    fs.rmdirSync(folderPath);
+  }
+}
+function deleteFile (filePath: string) {
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+    console.log(`${filePath} deleted successfully.`);
+  } else {
+    console.log(`${filePath} does not exist.`);
+  }
+}
 
+const assetsPath = path.join(process.cwd(), 'src', 'assets');
+deleteFolderRecursive(assetsPath);
 async function main () {
   try {
     // Dynamically import inquirer to handle ESM
@@ -108,7 +133,22 @@ module.exports = {
 @tailwind utilities;
     `;
     fs.writeFileSync(path.join(process.cwd(), 'src/index.css'), cssContent);
-
+    deleteFile('./src/App.css')
+    deleteFolderRecursive('./src/assets')
+    const appTsxContent = `
+    const App = () => {
+      return (
+        <>
+          <div className="text-4xl flex shadow-lg rounded-md ">
+            React + Vite +Tailwind
+          </div>
+        </>
+      );
+    };
+    export default App;
+    
+    `
+    fs.writeFileSync(path.join(process.cwd(), 'src', 'App.tsx'), appTsxContent)
     console.log('Vite project setup with React, TypeScript, and Tailwind CSS is complete.');
     const { uiLibSet } = await inquirer.default.prompt([
       {

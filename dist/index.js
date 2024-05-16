@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -35,6 +35,29 @@ Process closed by ${signal}. Exiting...`);
 }
 process.on("SIGINT", () => handleExit("SIGINT"));
 process.on("SIGTERM", () => handleExit("SIGTERM"));
+function deleteFolderRecursive(folderPath) {
+  if (fs.existsSync(folderPath)) {
+    fs.readdirSync(folderPath).forEach((file) => {
+      const currentPath = path.join(folderPath, file);
+      if (fs.lstatSync(currentPath).isDirectory()) {
+        deleteFolderRecursive(currentPath);
+      } else {
+        fs.unlinkSync(currentPath);
+      }
+    });
+    fs.rmdirSync(folderPath);
+  }
+}
+function deleteFile(filePath) {
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+    console.log(`${filePath} deleted successfully.`);
+  } else {
+    console.log(`${filePath} does not exist.`);
+  }
+}
+var assetsPath = path.join(process.cwd(), "src", "assets");
+deleteFolderRecursive(assetsPath);
 async function main() {
   try {
     const inquirer = await import("inquirer");
@@ -101,6 +124,22 @@ module.exports = {
 @tailwind utilities;
     `;
     fs.writeFileSync(path.join(process.cwd(), "src/index.css"), cssContent);
+    deleteFile("./src/App.css");
+    deleteFolderRecursive("./src/assets");
+    const appTsxContent = `
+    const App = () => {
+      return (
+        <>
+          <div className="text-4xl flex shadow-lg rounded-md ">
+            React + Vite +Tailwind
+          </div>
+        </>
+      );
+    };
+    export default App;
+    
+    `;
+    fs.writeFileSync(path.join(process.cwd(), "src", "App.tsx"), appTsxContent);
     console.log("Vite project setup with React, TypeScript, and Tailwind CSS is complete.");
     const { uiLibSet } = await inquirer.default.prompt([
       {
